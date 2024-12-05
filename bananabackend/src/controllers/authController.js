@@ -1,20 +1,16 @@
 const User = require("../model/User");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const registerUser = async (req, res) => {
   const { username, fullname, email, password } = req.body;
 
-  console.log({ username, fullname, email, password }); // Log received values
-
-  // Check if all required fields are present
   if (!username || !password || !email || !fullname) {
     return res
       .status(400)
       .json({ message: "Please fill out all the fields..." });
   }
 
-  // Check if the password is at least 6 characters long
   if (password.length < 6) {
     return res
       .status(400)
@@ -22,16 +18,13 @@ const registerUser = async (req, res) => {
   }
 
   try {
-    // Check if a user with the same email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists." });
     }
 
-    // Hash the password for security
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user instance with the hashed password and additional fields
     const newUser = new User({
       username,
       fullname,
@@ -39,12 +32,10 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    // Save the new user to the database
     await newUser.save();
-
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error("Error in registering User:", error); // Log error for debugging
+    console.error("Error in registering User:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -69,9 +60,30 @@ const loginUser = async (req, res) => {
     });
     res.json({ token });
   } catch (error) {
-    console.error("Error in loging:", error); // Log error
+    console.error("Error in logging:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports = { registerUser, loginUser };
+// New function to get user data
+const getUser = async (req, res) => {
+  const token = req.header("Authorization")?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password"); // Exclude password
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user); // Send user data
+  } catch (error) {
+    console.error("Error in fetching user data:", error);
+    res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUser };
