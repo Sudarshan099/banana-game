@@ -56,10 +56,6 @@ const Signup = () => {
         }
     };
 
-    const handleLogClick = () => {
-        navigate('/');
-    };
-
     return (
         <div>
             {/* <Navbar /> */}

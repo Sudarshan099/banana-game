@@ -1,20 +1,18 @@
-import { useNavigate } from "react-router-dom";
-
 class Navigation {
   constructor(navigate) {
     this.navigate = navigate;
   }
 
-  navigateToGame() {
-    this.navigate("/game", { state: { startNewGame: true } });
+  navigateToGame(state) {
+    this.navigate("/game", { state }); // Ensure state contains difficulty and startNewGame
   }
 
   navigateToLogin() {
     this.navigate("/login");
   }
 
-  navigateToProfile() {
-    this.navigate("/profile", { state: { startNewGame: true } });
+  navigateToProfile(state) {
+    this.navigate("/profile", { state });
   }
 }
 

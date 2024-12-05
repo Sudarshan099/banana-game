@@ -45,7 +45,6 @@ const Login = () => {
                     localStorage.setItem("token", data.token);
                     localStorage.setItem("username", formData.username); // Save the username
                     navigate("/"); // Redirect to home page on successful login
-                    alert("Login successful"); // Display success message
                 } else {
                     setError(data.message || "Login failed.");
                 }

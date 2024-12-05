@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import BackImg from "../assest/3.png";
 import { useNavigate } from "react-router-dom";
 import UserAuth from "../utils/UserAuth";
@@ -8,9 +8,11 @@ const Home = () => {
   const navigate = useNavigate();
   const nav = new Navigation(navigate);
 
+  const [showLevels, setShowLevels] = useState(false);
+
   const handleStartClick = () => {
     if (UserAuth.isLoggedIn()) {
-      nav.navigateToGame();
+      setShowLevels(true);
     } else {
       nav.navigateToLogin();
     }
@@ -19,6 +21,12 @@ const Home = () => {
   const handleProfileClick = () => {
     nav.navigateToProfile();
   };
+
+  const startGameWithLevel = (level) => {
+    console.log(`Starting game with difficulty: ${level}`); // Debugging
+    nav.navigateToGame({ difficulty: level, startNewGame: true }); // Ensure `difficulty` and `startNewGame` are passed
+  };
+
 
   return (
     <div>
@@ -59,6 +67,39 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for selecting difficulty */}
+      {showLevels && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg text-center space-y-4">
+            <h2 className="text-xl font-bold">Select Difficulty</h2>
+            <button
+              className="w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300"
+              onClick={() => startGameWithLevel("easy")}
+            >
+              Easy 🍌
+            </button>
+            <button
+              className="w-full py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300"
+              onClick={() => startGameWithLevel("medium")}
+            >
+              Medium 🍌
+            </button>
+            <button
+              className="w-full py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
+              onClick={() => startGameWithLevel("hard")}
+            >
+              Hard 🍌
+            </button>
+            <button
+              className="w-full py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition duration-300"
+              onClick={() => setShowLevels(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

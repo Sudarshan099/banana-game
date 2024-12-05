@@ -6,12 +6,12 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import Home from "./components/Home";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
-import Game from "./components/Game";
+import Home from "./pages/Home";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Game from "./pages/Game";
 import Navbar from "./components/Navbar";
-import Profile from "./components/Profile";
+import Profile from "./pages/Profile";
 
 // PrivateRoute component to protect routes that need authentication
 const PrivateRoute = ({ element }) => {
